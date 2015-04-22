@@ -5,7 +5,7 @@ import java.net.URL
 import java.text.SimpleDateFormat
 import java.util.{SimpleTimeZone, Date}
 import com.github.seratch.scalikesolr.Solr
-import com.github.seratch.scalikesolr.request.query.Query
+import com.github.seratch.scalikesolr.request.query.{MaximumRowsReturned, Sort, Query}
 import com.github.seratch.scalikesolr.request.QueryRequest
 
 /**
@@ -27,6 +27,27 @@ object Client {
                 throw e
             }
         }
+    }
+
+    def sortedByDate() = {
+        val request = sortedByDateQuery
+        try {
+            val response = client.doQuery(request)
+            response.response.documents
+        } catch {
+            case e: IOException => {
+                println("Error on query:" + request.queryString)
+                throw e
+            }
+        }
+
+    }
+
+    def sortedByDateQuery = {
+        val request = new QueryRequest(Query("*:*"))
+        request.setSort(Sort.as("historyDate asc"))
+        request.setMaximumRowsReturned(new MaximumRowsReturned(30000))
+        request
     }
 
     def dateQueryRequest(date: Date) = {

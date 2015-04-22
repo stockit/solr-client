@@ -13,14 +13,26 @@ object Main extends App {
 
     var ok = true
     while(ok) {
-        val ln = scala.io.StdIn.readLine().replace("T", " ").replace("Z","")
+        val ln = scala.io.StdIn.readLine()
         ok = ln != null
-        val date = client.formatter.parse(ln)
 
-        println("Result: " + client.fetch(date))
+        if (ln == "all") {
+            println("Returned Documents: " + client.sortedByDate.size)
+        } else if (ln == "exit") {
+            System.exit(0)
+        } else {
+            val query = parseQuery(ln)
+            val date = client.formatter.parse(query)
+            println("Result: " + client.fetch(date))
+        }
+    }
+
+    def parseQuery(line: String) = {
+        line.replace("T", " ").replace("Z", "")
     }
 
     def helpMessage = {
-        "Enter a date for example: " + client.parseDate(new Date()).replace("\\","")
+        val line1 = "Enter a date for example: " + client.parseDate(new Date()).replace("\\","")
+        List(line1, "Or type all for all documents").mkString("\n")
     }
 }
