@@ -1,5 +1,7 @@
 package com.stockit
 
+import java.util.Date
+
 import com.stockit.client.Client
 
 /**
@@ -7,5 +9,13 @@ import com.stockit.client.Client
  */
 object Main extends App {
     val client = Client
-    println(client.fetch())
+    println(helpMessage)
+    val ln = scala.io.StdIn.readLine()
+    val date = client.formatter.parse(ln)
+
+    println("Result: " + client.fetch(date))
+
+    def helpMessage = {
+        "Enter a date below for example: " + client.formatter.format(new Date())
+    }
 }
