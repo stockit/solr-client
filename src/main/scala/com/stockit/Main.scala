@@ -10,12 +10,17 @@ import com.stockit.client.Client
 object Main extends App {
     val client = Client
     println(helpMessage)
-    val ln = scala.io.StdIn.readLine()
-    val date = client.formatter.parse(ln)
 
-    println("Result: " + client.fetch(date))
+    var ok = true
+    while(ok) {
+        val ln = scala.io.StdIn.readLine().replace("T", " ").replace("Z","")
+        ok = ln != null
+        val date = client.formatter.parse(ln)
+
+        println("Result: " + client.fetch(date))
+    }
 
     def helpMessage = {
-        "Enter a date below for example: " + client.formatter.format(new Date())
+        "Enter a date for example: " + client.parseDate(new Date()).replace("\\","")
     }
 }

@@ -20,11 +20,6 @@ object Client {
         val request = dateQueryRequest(date)
         try {
             val response = client.doQuery(request)
-            response.response.documents foreach {
-                case doc => {
-                    println(doc.get("articleId").toString())
-                }
-            }
             response.response.documents
         } catch {
             case e: IOException => {
@@ -35,7 +30,17 @@ object Client {
     }
 
     def dateQueryRequest(date: Date) = {
-        new QueryRequest(Query("historyDate:" + "2013-09-18T05:00:00Z")) // dateToString(date)))
+        val string = parseDate(date)
+        new QueryRequest(Query("historyDate:" + string)) // dateToString(date)))
+    }
+
+    def parseDate(date: Date) = {
+        parseDateString(dateToString(date))
+    }
+
+    def parseDateString(rawString: String) = {
+        val withChars = rawString.substring(0,10) + "T" + rawString.substring(11, rawString.length) + "Z"
+        withChars.replace(":", "\\:")
     }
 
     def dateToString(date: Date) = {
